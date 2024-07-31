@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web-based GIS for Hotels and Guest Houses around KNUST</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="Knust_Boundary.js"></script>
+
+</head>
+<body>
+   <div id="map"></div> 
+</body>
+</html>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<script src="Boundary.js"></script>
+<script>
+    
+// OSM layer
+var map = L.map('map').setView([6.6745, -1.5717], 13);
+
+var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
+osm.addTo(map);
+
+// Displaying Knust Boundary
+var knust = L.geoJSON(knust).addTo(map)
+
+
+// Google Map Layer
+googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+});
+googleStreets.addTo(map);
+
+// Satellite Layer
+googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+});
+googleSat.addTo(map);
+
+//Layer Group
+var FacilityA = L.marker([6.6815, -1.5703]).bindPopup('Nova Hotel').openPopup();
+    FacilityB   = L.marker([6.6792, -1.5606]).bindPopup('Royal Basin Hotel').openPopup();
+    FacilityC   = L.marker([6.6750, -1.5742]).bindPopup('Villa Sankofa').openPopup();
+    FacilityD   = L.marker([6.6759, -1.5689]).bindPopup('Knust Guest House').openPopup();  
+    FacilityE   = L.marker([6.6748, -1.5700]).bindPopup('Ahodwo Guest House').openPopup();  
+    FacilityF   = L.marker([6.6779, -1.5672]).bindPopup('King David Hotel').openPopup();  
+    FacilityG   = L.marker([6.6789, -1.5712]).bindPopup('Georgia Hotel').openPopup();  
+    FacilityH   = L.marker([6.6738, -1.5734]).bindPopup('Teeman\'s Hotel').openPopup();  
+
+var Facilities = L.layerGroup([FacilityA, FacilityB,FacilityC, FacilityD,FacilityE,FacilityF, FacilityG, FacilityH]);
+
+//Image urls, alt text,and image text
+var hotels = [ 
+{
+    imageUrl: '/images/Edmund.jpg',
+    latLngBounds: L.latLngBounds([[6.6815, -1.5703], [6.6816, -1.5704]]),
+    altText: 'Image of Noda Hotel'
+},
+{
+    imageUrl: 'image url for Royal Basin Hotel.jpg',
+    latLngBounds: L.latLngBounds([[6.6792, -1.5606], [6.6792, -1.5606]]),
+    altText: 'Image of Royal Basin Hotel'
+},
+{
+    imageUrl: 'image url for Villa Sankofa.jpg',
+    latLngBounds: L.latLngBounds([[6.6750, -1.5742], [6.6750, -1.5742]]),
+    altText: 'Image of Villa Sankofa'
+},
+{
+    imageUrl: 'image url for knust guest house.jpg',
+    latLngBounds: L.latLngBounds([[6.6759, -1.55689], [6.6759, -1.5689]]),
+    altText: 'Image of Knust Guest House'
+},
+{
+    imageUrl: 'image ahodow guest house.jpg',
+    latLngBounds: L.latLngBounds([[6.6748, -1.5700], [6.6748, -1.5700]]),
+    altText: 'Image of Ahodow Guest House'
+},
+{
+    imageUrl: 'image url for King David Hotel hotel.jpg',
+    latLngBounds: L.latLngBounds([[6.6779, -1.5672], [6.6779, -1.5672]]),
+    altText: 'Image of King David Hotel'
+},
+{
+    imageUrl: 'image url for Georgia Hotel.jpg',
+    latLngBounds: L.latLngBounds([[6.6789, -1.5712], [6.6789, -1.5712]]),
+    altText: 'Image of Georgia Hotel'
+},
+{
+    imageUrl: 'image url for Teeman\'s Hotel.jpg',
+    latLngBounds: L.latLngBounds([[6.6738, -1.5734], [6.6738, -1.5734]]),
+    altText: 'Image of Teeman\'s Hotel'
+}
+];
+
+// Function to add image overlays
+function addImageOverlay(hotel) {
+    L.imageOverlay(hotel.imageUrl, hotel.latLngBounds, {
+        opacity: 0.8,
+        alt: hotel.altText,
+        interactive: true
+}).addTo(map);
+}
+// Add image overlays for each hotel
+hotels.forEach(addImageOverlay);
+
+// Layer Control
+var baseLayers = {
+    "OpenStreetMap": osm,
+    "Google Satellite": googleSat,
+    "Google Map": googleStreets,
+ 
+};
+var overlayMaps = {
+    "Facilities": Facilities
+};
+
+var LayerControl = L.control.layers(baseLayers, overlayMaps).addTo(map);
+
+
+L.Control.geocoder().addTo(map);
+</script>
